@@ -34,17 +34,18 @@ sunburst <- function(
   , count =  FALSE
   , explanation = NULL
   , breadcrumb = list()
+  , legendSize = list()
   , width = NULL
   , height = NULL
 ) {
-
+  
   if(is.null(csvdata) && is.null(jsondata)) stop("please provide either csvdata or jsondata",call.=FALSE)
   if(!is.null(csvdata) && !is.null(jsondata)) warning("both csv and json provided; will use csvdata",call.=FALSE)
-
+  
   if(!is.null(explanation) && !inherits(explanation,"JS_EVAL")){
     explanation = htmlwidgets::JS(explanation)
   }
-
+  
   # forward options using x
   x = list(
     csvdata = csvdata
@@ -56,9 +57,10 @@ sunburst <- function(
       ,count = count
       ,explanation = explanation
       ,breadcrumb = breadcrumb
+      ,legendSize = legendSize
     )
   )
-
+  
   # create widget
   htmlwidgets::createWidget(
     name = 'sunburst',
@@ -91,20 +93,20 @@ renderSunburst <- function(expr, env = parent.frame(), quoted = FALSE) {
 sunburst_html <- function(id, style, class, ...){
   tagList(
     tags$div( id = id, class = class, style = style, style="position:relative;"
-      ,tags$div(
-        tags$div(class = "sunburst-main"
-          , tags$div( class = "sunburst-sequence" )
-          , tags$div( class = "sunburst-chart"
-              ,tags$div( class = "sunburst-explanation", style = "visibility:hidden;"
-         #       ,tags$span( class = "sunburst-percentage")
+              ,tags$div(
+                tags$div(class = "sunburst-main"
+                         , tags$div( class = "sunburst-sequence" )
+                         , tags$div( class = "sunburst-chart"
+                                     ,tags$div( class = "sunburst-explanation", style = "visibility:hidden;"
+                                                #       ,tags$span( class = "sunburst-percentage")
+                                     )
+                         )
+                )
+                ,tags$div(class = "sunburst-sidebar"
+                          , tags$input( type = "checkbox", class = "sunburst-togglelegend", "Legend" )
+                          , tags$div( class = "sunburst-legend", style = "visibility:hidden;" )
+                )
               )
-          )
-        )
-        ,tags$div(class = "sunburst-sidebar"
-          , tags$input( type = "checkbox", class = "sunburst-togglelegend", "Legend" )
-          , tags$div( class = "sunburst-legend", style = "visibility:hidden;" )
-        )
-      )
     )
   )
 }
